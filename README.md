@@ -221,6 +221,32 @@ docker stop heisenberg
 
 ---
 
+## 🐳 Docker Hub (ohne Bauen)
+
+**Fertiges Image ziehen und direkt starten:**
+
+```bash
+# Image ziehen
+docker pull heisenberg/archehisenberg:latest
+
+# Container starten
+docker run -d \
+  --name heisenberg \
+  -p 18789:18789 \
+  -e OPENAI_API_KEY="sk-..." \
+  -e ANTHROPIC_API_KEY="sk-ant-..." \
+  heisenberg/archehisenberg:latest
+
+# Oder mit docker-compose
+docker-compose up -d
+```
+
+**Image Links:**
+- 🐳 Docker Hub: https://hub.docker.com/r/heisenberg/archehisenberg
+- 📦 GitHub Container Registry: `ghcr.io/M-Heisenberg2026/archehisenberg`
+
+---
+
 ## 🤝 Credits
 
 - **Heisenberg** - Der AI-Assistent ⚛️
