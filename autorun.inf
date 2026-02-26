@@ -1,0 +1,11 @@
+[autorun]
+open=archehisenberg.exe
+icon=archehisenberg.ico
+label=ArcheHeisenberg USB
+action=Heisenberg starten
+
+[autorun2]
+open=archehisenberg.sh
+icon=archehisenberg.ico
+label=ArcheHeisenberg USB (Linux)
+action=Heisenberg starten

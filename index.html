@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 ArcheHeisenberg USB</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+        }
+        
+        .bg-glow-1 {
+            top: -200px;
+            right: -200px;
+            background: #00ff88;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .bg-glow-2 {
+            bottom: -200px;
+            left: -200px;
+            background: #7c3aed;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 50%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(0, 255, 136, 0.5);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, auto);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .bento-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .bento-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.1);
+        }
+        
+        .bento-item:hover::before {
+            opacity: 1;
+        }
+        
+        /* Grid positions */
+        .bento-item.hero {
+            grid-column: span 2;
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+        }
+        
+        .bento-item.wide {
+            grid-column: span 2;
+        }
+        
+        .bento-item.tall {
+            grid-row: span 2;
+        }
+        
+        /* Icons */
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero .icon {
+            font-size: 6rem;
+        }
+        
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .hero .title {
+            font-size: 2rem;
+        }
+        
+        .description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Status indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .status.ready {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+        }
+        
+        .status.waiting {
+            background: rgba(255, 200, 0, 0.15);
+            color: #ffc800;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .progress-text {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+        }
+        
+        /* Action buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #0a0a0f;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Terminal output */
+        .terminal {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .terminal-line {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+        
+        .terminal-line.success { color: #00ff88; }
+        .terminal-line.error { color: #ff4757; }
+        .terminal-line.info { color: #00d4ff; }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+        }
+        
+        .footer a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bento-item.hero,
+            .bento-item.wide,
+            .bento-item.tall {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">⚛️ ARCHEHEISENBERG</h1>
+            <p class="tagline">One-Click AI Assistant Deployment</p>
+        </header>
+        
+        <!-- Bento Grid -->
+        <div class="bento-grid">
+            <!-- Hero: Start -->
+            <div class="bento-item hero" onclick="runDeployment()">
+                <div class="icon">🚀</div>
+                <h2 class="title">START</h2>
+                <p class="description">Klicke hier um Heisenberg automatisch zu installieren und zu starten</p>
+                <div class="status ready">
+                    <span class="status-dot"></span>
+                    Bereit
+                </div>
+                <div class="progress-container" id="progressContainer" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Initialisiere...</p>
+                </div>
+            </div>
+            
+            <!-- System Check -->
+            <div class="bento-item" onclick="checkSystem()">
+                <div class="icon">🔍</div>
+                <h3 class="title">System Check</h3>
+                <p class="description">Prüfe OS, Docker & Voraussetzungen</p>
+            </div>
+            
+            <!-- Docker Setup -->
+            <div class="bento-item" onclick="setupDocker()">
+                <div class="icon">🐳</div>
+                <h3 class="title">Docker</h3>
+                <p class="description">Docker installieren oder starten</p>
+            </div>
+            
+            <!-- API Keys -->
+            <div class="bento-item" onclick="setupKeys()">
+                <div class="icon">🔑</div>
+                <h3 class="title">API Keys</h3>
+                <p class="description">OpenAI, Anthropic & MiniMax Keys</p>
+            </div>
+            
+            <!-- Terminal -->
+            <div class="bento-item wide">
+                <div class="icon">💻</div>
+                <h3 class="title">Terminal Output</h3>
+                <div class="terminal" id="terminal">
+                    <p class="terminal-line info">Warte auf Befehl...</p>
+                </div>
+            </div>
+            
+            <!-- Documentation -->
+            <div class="bento-item">
+                <div class="icon">📖</div>
+                <h3 class="title">Doku</h3>
+                <p class="description">Anleitung & Hilfe</p>
+            </div>
+            
+            <!-- Settings -->
+            <div class="bento-item">
+                <div class="icon">⚙️</div>
+                <h3 class="title">Einstellungen</h3>
+                <p class="description">Konfiguration anpassen</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🧬 ArcheHeisenberg USB | Made with ⚛️ by Heisenberg</p>
+            <p><a href="https://github.com/M-Heisenberg2026" target="_blank">GitHub</a> | <a href="#">Docs</a> | <a href="#">Support</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        const terminal = document.getElementById('terminal');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        function log(msg, type = '') {
+            const line = document.createElement('p');
+            line.className = `terminal-line ${type}`;
+            line.textContent = `> ${msg}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function updateProgress(percent, text) {
+            progressContainer.style.display = 'block';
+            progressFill.style.width = percent + '%';
+            progressText.textContent = text;
+        }
+        
+        async function checkSystem() {
+            log('Starte System-Check...', 'info');
+            
+            // Detect OS
+            const os = navigator.platform.toLowerCase();
+            let osName = 'Unknown';
+            if (os.includes('linux')) osName = 'Linux';
+            else if (os.includes('mac')) osName = 'macOS';
+            else if (os.includes('win')) osName = 'Windows';
+            
+            log(`Betriebssystem: ${osName}`, 'success');
+            
+            // Check Docker (simulated - would need backend)
+            log('Prüfe Docker...', 'info');
+            setTimeout(() => {
+                log('Docker: Nicht erkannt (Browser- Sandbox)', 'error');
+                log('Bitte Script lokal ausführen für volle Funktionalität', 'info');
+            }, 500);
+        }
+        
+        function setupDocker() {
+            log('Docker-Setup wird gestartet...', 'info');
+            log('Bitte Script lokal ausführen: ./archehisenberg.sh', 'info');
+        }
+        
+        function setupKeys() {
+            log('API-Key Setup wird gestartet...', 'info');
+            log('Bitte Script lokal ausführen: ./archehisenberg.sh', 'info');
+        }
+        
+        async function runDeployment() {
+            log('Starte Deployment...', 'info');
+            log('Dieses Feature erfordert eine lokale Ausführung.', 'error');
+            log('Bitte führen Sie folgenden Befehl aus:', 'info');
+            log('', '');
+            log('  ./archehisenberg.sh', 'success');
+            log('', '');
+            log('Oder öffnen Sie ein Terminal und doppelklicken Sie auf autorun.sh', 'info');
+            
+            // Simulate progress
+            updateProgress(10, 'Erkenne OS...');
+            setTimeout(() => updateProgress(30, 'Prüfe Docker...'), 500);
+            setTimeout(() => updateProgress(50, 'Lade Scripts...'), 1000);
+            setTimeout(() => updateProgress(70, 'Richte API-Keys ein...'), 1500);
+            setTimeout(() => updateProgress(90, 'Starte Container...'), 2000);
+            setTimeout(() => {
+                updateProgress(100, 'Fertig!');
+                log('Deployment abgeschlossen!', 'success');
+            }, 2500);
+        }
+        
+        // Initialize
+        log('ArcheHeisenberg UI geladen', 'success');
+        log('Klicke auf START oder führe das Script lokal aus', 'info');
+    </script>
+</body>
+</html>

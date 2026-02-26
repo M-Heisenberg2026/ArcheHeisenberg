@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  heisenberg:
+    build: .
+    image: heisenberg/archehisenberg:latest
+    container_name: heisenberg
+    restart: unless-stopped
+    ports:
+      - "18789:18789"  # OpenClaw Gateway
+      - "8080:8080"    # Web UI
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - MINIMAX_API_KEY=${MINIMAX_API_KEY:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - MODEL=minimax/MiniMax-M2.5
+    volumes:
+      - ./workspace:/workspace
+      - ~/.openclaw:/root/.openclaw
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18789/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: OpenClaw Gateway (if not running on host)
+  # openclaw-gateway:
+  #   image: heisenberg/openclaw:latest
+  #   container_name: openclaw-gateway
+  #   restart: unless-stopped
+  #   ports:
+  #     - "18789:18789"
+  #   volumes:
+  #     - ~/.openclaw:/root/.openclaw
