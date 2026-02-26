@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs (already in image)
+*.md
+LICENSE
+
+# Temp
+*.tmp
+*.log
+*.pyc
+__pycache__
